@@ -6,11 +6,15 @@
 
 #include <Servo.h>
 
+// Constants for the ELEX4618 communication protocol TYPE field
 enum {DIGITAL = 0, ANALOG, SERVO};
 
+// The MSP432 has 16 10-Bit ADC channels. The A_PIN array provides an easy way to map the 
+// protocol CHANNEL integer to the A? pin
 #define ANALOG_PINS 16
 int A_PIN [] = {A0, A1, A2, A3, A4, A5, A6, A7, A8, A9, A10, A11, A12, A13, A14, A15};
 
+// Constants for the servo pins 
 #define SERVO_PORT0 19
 #define SERVO_PORT1 4
 #define SERVO_PORT2 5
@@ -26,28 +30,30 @@ int value;
 
 void setup()
 {
-  // initialize serial
+  // initialize serial port
   Serial.begin(BAUD_RATE);
   Serial.setTimeout(10);
 
-  // initialize digital IO to Input
+  // initialize digital IO to Input 
   for (int digital_index = 1; digital_index <= 40; digital_index++)
   {
     pinMode(digital_index, INPUT_PULLUP);
   }
-  
+
+  // initialize MSP432 pushbuttons to Input (not on Boosterpack)
   pinMode(PUSH1, INPUT_PULLUP);
   pinMode(PUSH2, INPUT_PULLUP);
 
-  // initialize LED display
+  // initialize MSP432 LED to output (not on Boosterpack)
   pinMode(RED_LED, OUTPUT);
 
-  // initialize servos
+  // initialize servo pins to output
   pinMode(SERVO_PORT0, OUTPUT);
   pinMode(SERVO_PORT1, OUTPUT);
   pinMode(SERVO_PORT2, OUTPUT);
   pinMode(SERVO_PORT3, OUTPUT);
-  
+
+  // Attach servo pins to the servo objects
   myservo[0].attach(SERVO_PORT0);
   myservo[1].attach(SERVO_PORT1);
   myservo[2].attach(SERVO_PORT2);
@@ -71,18 +77,25 @@ void loop()
 {
   /////////////////////////////////////////
   // TODO: Flash LED ON/OFF
+  // Hint: If you use DELAY your program will run slowly.
+  // Hint: Use MILLIS to measure elapsed time and toggle LED
   /////////////////////////////////////////
-  
+
+  // While there is data in the serial port buffer, continue to process
   while (Serial.available() > 0)
   {
+    // Read the first character
     char ch = Serial.read();
 
+    // If it's a COMMAND character (first character in ELEX4618 protocol) then move to next step
     if (ch == 'G' || ch == 'g' || ch == 'S' || ch == 's')
     {      
+      // Read the space delimited next value as an integer (TYPE from protocol)
       type = Serial.parseInt();
+      // Read the space delimited next value as an integer (CHANNEL from protocol)
       channel = Serial.parseInt();
 
-      // Only for SET
+      // If a SET command then read the space delimited next value as an integer (VALUE from protocol)
       if (ch == 'S' || ch == 's')
       {      
         value = Serial.parseInt();
@@ -91,15 +104,22 @@ void loop()
       /////////////////////////////////////////
       // TODO: Get / Set Digital
       /////////////////////////////////////////
+      // IF GET DO A DIGITAL READ and return the VALUE
+      // IF SET DO A DIGITAL WRITE
       
       /////////////////////////////////////////
       // TODO: Get / Set Analog
       /////////////////////////////////////////
+      // IF GET DO AN ANALOG READ and return the VALUE
+      // IF SET DON'T DO ANYTHING (CONFLICT WITH SERVO)
       
       /////////////////////////////////////////
       // TODO: Get / Set Servo
       /////////////////////////////////////////
+      // IF GET RETURN THE LAST SERVO VALUE SENT
+      // IF SET SEND TO SERVO OBJECT
 
+      // Format and send response
       Serial.print ("A ");
       Serial.print (type);
       Serial.print (" ");
