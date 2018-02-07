@@ -1,13 +1,17 @@
 ///////////////////////////////////////////////////////////////////////////////////////////
 // MSP432 Energia Communication System for ELEX4618 & ELEX4699
-// Prepared by: Craig Hennessey
-// Last Edited: Oct 30, 2017
+// Prepared by Craig Hennessey
+// Last Edited: Feb 7, 2018
 ///////////////////////////////////////////////////////////////////////////////////////////
 
 #include <Servo.h>
 
 // Constants for the ELEX4618 communication protocol TYPE field
 enum {DIGITAL = 0, ANALOG, SERVO};
+
+#define RGBLED_RED_PIN 39
+#define RGBLED_GRN_PIN 38
+#define RGBLED_BLU_PIN 37
 
 // The MSP432 has 16 10-Bit ADC channels. The A_PIN array provides an easy way to map the 
 // protocol CHANNEL integer to the A? pin
@@ -32,7 +36,6 @@ void setup()
 {
   // initialize serial port
   Serial.begin(BAUD_RATE);
-  Serial.setTimeout(10);
 
   // initialize digital IO to Input 
   for (int digital_index = 1; digital_index <= 40; digital_index++)
@@ -44,8 +47,15 @@ void setup()
   pinMode(PUSH1, INPUT_PULLUP);
   pinMode(PUSH2, INPUT_PULLUP);
 
-  // initialize MSP432 LED to output (not on Boosterpack)
+  // initialize MSP432 LED to ON (not on Boosterpack). Turn off RGB LED
   pinMode(RED_LED, OUTPUT);
+  digitalWrite(RED_LED, HIGH);
+  pinMode(RGBLED_RED_PIN, OUTPUT);
+  pinMode(RGBLED_GRN_PIN, OUTPUT);
+  pinMode(RGBLED_BLU_PIN, OUTPUT);
+  digitalWrite(RGBLED_RED_PIN, LOW);
+  digitalWrite(RGBLED_GRN_PIN, LOW);
+  digitalWrite(RGBLED_BLU_PIN, LOW);
 
   // initialize servo pins to output
   pinMode(SERVO_PORT0, OUTPUT);
@@ -78,7 +88,7 @@ void loop()
   /////////////////////////////////////////
   // TODO: Flash LED ON/OFF
   // Hint: If you use DELAY your program will run slowly.
-  // Hint: Use MILLIS to measure elapsed time and toggle LED
+  // Hint: Use millis() to measure elapsed time and toggle LED
   /////////////////////////////////////////
 
   // While there is data in the serial port buffer, continue to process
