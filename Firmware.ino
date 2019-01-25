@@ -1,7 +1,7 @@
 ///////////////////////////////////////////////////////////////////////////////////////////
 // MSP432 Energia Communication System for ELEX4618 & ELEX4699
 // Prepared by Craig Hennessey
-// Last Edited: Feb 7, 2018
+// Last Edited: Jan 25, 2019
 ///////////////////////////////////////////////////////////////////////////////////////////
 
 #include <Servo.h>
@@ -70,14 +70,15 @@ void setup()
   myservo[3].attach(SERVO_PORT3);
 
   Serial.print("\n////////////////////////////////////////////////////////////////////////////////////");
-  Serial.print("\n// ELEX 4618 IO Communication for MSP433 V2.0 Student");
+  Serial.print("\n// ELEX 4618 IO Communication for MSP432 V2.1 Student");
   Serial.print("\n// By: STUDENT NAME, DATE");
-  Serial.print("\n// MSP432: Digital In/Out 1-40 on 4 headers");
-  Serial.print("\n// MSP432: Digital In 41 & 42 are PUSH1 and PUSH2");
+  Serial.print("\n// MSP432: Digital In/Out 1-40 on 4x 10 pin headers");
+  Serial.print("\n// MSP432: Digital In 41 & 42 are PUSH1 and PUSH2 (MSP432)");
   Serial.print("\n// MSP432: Analog in A0 to A15 (0-15)");
   Serial.print("\n// MSP432: Analog out not supported");
   Serial.print("\n// MSP432: Servo 19,4,5,6 header (0-3)");
-  Serial.print("\n// BoosterPack (432): Accelerometer (A 11,13,14), Joystick (A 9,15), Buttons (D 32,33), LED (37,38,39)");
+  Serial.print("\n// BoosterPack: Joystick (Analog 9,15), Accelerometer (Analog 11,13,14)
+  Serial.print("\n// BoosterPack: Buttons (Digital 32,33), LED (Digital 37,38,39)");
   Serial.print("\n// Protocol: DIRECTION (G/S) TYPE (0=D, 1=A, 2=S) CHANNEL VALUE");
   Serial.print("\n// Example: G 0 0, S 2 1 100");
   Serial.print("\n////////////////////////////////////////////////////////////////////////////////////\n");
@@ -140,4 +141,3 @@ void loop()
     }
   }
 }
-
