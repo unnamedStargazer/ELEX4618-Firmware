@@ -77,7 +77,7 @@ void setup()
   Serial.print("\n// MSP432: Analog in A0 to A15 (0-15)");
   Serial.print("\n// MSP432: Analog out not supported");
   Serial.print("\n// MSP432: Servo 19,4,5,6 header (0-3)");
-  Serial.print("\n// BoosterPack: Joystick (Analog 9,15), Accelerometer (Analog 11,13,14)
+  Serial.print("\n// BoosterPack: Joystick (Analog 9,15), Accelerometer (Analog 11,13,14)");
   Serial.print("\n// BoosterPack: Buttons (Digital 32,33), LED (Digital 37,38,39)");
   Serial.print("\n// Protocol: DIRECTION (G/S) TYPE (0=D, 1=A, 2=S) CHANNEL VALUE");
   Serial.print("\n// Example: G 0 0, S 2 1 100");
