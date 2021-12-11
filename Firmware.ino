@@ -1,7 +1,7 @@
 ///////////////////////////////////////////////////////////////////////////////////////////
-// MSP432 Energia Communication System for ELEX4618 & ELEX4699
+// Tiva C TM4C123G Energia Communication System for ELEX4618 & ELEX4699
 // Prepared by Craig Hennessey
-// Last Edited: Jan 25, 2019
+// Last Edited: Sept 5, 2021
 ///////////////////////////////////////////////////////////////////////////////////////////
 
 #include <Servo.h>
@@ -13,10 +13,9 @@ enum {DIGITAL = 0, ANALOG, SERVO};
 #define RGBLED_GRN_PIN 38
 #define RGBLED_BLU_PIN 37
 
-// The MSP432 has 16 10-Bit ADC channels. The A_PIN array provides an easy way to map the 
-// protocol CHANNEL integer to the A? pin
-#define ANALOG_PINS 16
-int A_PIN [] = {A0, A1, A2, A3, A4, A5, A6, A7, A8, A9, A10, A11, A12, A13, A14, A15};
+// protocol CHANNEL integer indexes into array to select to the A? pin
+#define ANALOG_PINS 12
+int A_PIN [] = {A0, A1, A2, A3, A4, A5, A6, A7, A8, A9, A10, A11};
 
 // Constants for the servo pins 
 #define SERVO_PORT0 19
@@ -43,11 +42,11 @@ void setup()
     pinMode(digital_index, INPUT_PULLUP);
   }
 
-  // initialize MSP432 pushbuttons to Input (not on Boosterpack)
+  // initialize pushbuttons on uC to Input (not on Boosterpack)
   pinMode(PUSH1, INPUT_PULLUP);
   pinMode(PUSH2, INPUT_PULLUP);
 
-  // initialize MSP432 LED to ON (not on Boosterpack). Turn off RGB LED
+  // initialize LED on uC to ON (not on Boosterpack). Turn off RGB LED
   pinMode(RED_LED, OUTPUT);
   digitalWrite(RED_LED, HIGH);
   pinMode(RGBLED_RED_PIN, OUTPUT);
@@ -70,13 +69,13 @@ void setup()
   myservo[3].attach(SERVO_PORT3);
 
   Serial.print("\n////////////////////////////////////////////////////////////////////////////////////");
-  Serial.print("\n// ELEX 4618 IO Communication for MSP432 V2.1 Student");
+  Serial.print("\n// ELEX 4618 IO Communication for TM4C123G V3.0 Student");
   Serial.print("\n// By: STUDENT NAME, DATE");
-  Serial.print("\n// MSP432: Digital In/Out 1-40 on 4x 10 pin headers");
-  Serial.print("\n// MSP432: Digital In 41 & 42 are PUSH1 and PUSH2 (MSP432)");
-  Serial.print("\n// MSP432: Analog in A0 to A15 (0-15)");
-  Serial.print("\n// MSP432: Analog out not supported");
-  Serial.print("\n// MSP432: Servo 19,4,5,6 header (0-3)");
+  Serial.print("\n// TM4C123G: Digital In/Out 1-40 on 4x 10 pin headers");
+  Serial.print("\n// TM4C123G: Digital In 41 & 42 are PUSH1 and PUSH2 (TM4C123G)");
+  Serial.print("\n// TM4C123G: Analog in A0 to A15 (0-15)");
+  Serial.print("\n// TM4C123G: Analog out not supported");
+  Serial.print("\n// TM4C123G: Servo 19,4,5,6 header (0-3)");
   Serial.print("\n// BoosterPack: Joystick (Analog 9,15), Accelerometer (Analog 11,13,14)");
   Serial.print("\n// BoosterPack: Buttons (Digital 32,33), LED (Digital 37,38,39)");
   Serial.print("\n// Protocol: DIRECTION (G/S) TYPE (0=D, 1=A, 2=S) CHANNEL VALUE");
