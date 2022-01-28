@@ -1,13 +1,13 @@
 ///////////////////////////////////////////////////////////////////////////////////////////
 // MSP432 Energia Communication System for ELEX4618 & ELEX4699
 // Prepared by Craig Hennessey
-// Last Edited: Jan 25, 2019
+// Last Edited: 2022-01-28 by Felix Serban
 ///////////////////////////////////////////////////////////////////////////////////////////
 
 #include <Servo.h>
 
 // Constants for the ELEX4618 communication protocol TYPE field
-enum {DIGITAL = 0, ANALOG, SERVO};
+enum {DIGITAL = 0, ANALOG, SERVO, GET, SET};
 
 #define RGBLED_RED_PIN 39
 #define RGBLED_GRN_PIN 38
@@ -29,6 +29,7 @@ Servo myservo[4];
 int type;
 int channel;
 int value;
+int mode;
 bool ledState;
 unsigned long previousMillis = 0;
 const long intervalMillisShort = 10;
@@ -79,11 +80,11 @@ void setup()
   Serial.print("\n// ELEX 4618 IO Communication for MSP432 V2.1 Student");
   Serial.print("\n// By: Felix Serban, 2022-01-28");
   Serial.print("\n// MSP432: Digital In/Out 1-40 on 4x 10 pin headers");
-  Serial.print("\n// MSP432: Digital In 41 & 42 are PUSH1 and PUSH2 (MSP432)");
+  Serial.print("\n// MSP432: Digital In 73 & 74 are PUSH1 and PUSH2 (MSP432)");
   Serial.print("\n// MSP432: Analog in A0 to A15 (0-15)");
   Serial.print("\n// MSP432: Analog out not supported");
   Serial.print("\n// MSP432: Servo 19,4,5,6 header (0-3)");
-  Serial.print("\n// BoosterPack: Joystick (Analog 9,15), Accelerometer (Analog 11,13,14)");
+  Serial.print("\n// BoosterPack: Joystick (Analog 2,26), Accelerometer (Analog 23,24,25)");
   Serial.print("\n// BoosterPack: Buttons (Digital 32,33), LED (Digital 37,38,39)");
   Serial.print("\n// Protocol: DIRECTION (G/S) TYPE (0=D, 1=A, 2=S) CHANNEL VALUE");
   Serial.print("\n// Example: G 0 0, S 2 1 100");
@@ -94,10 +95,6 @@ void loop()
 {
   // Heartbeat to indicate board is operational
   unsigned long currentMillis = millis();
-  //ledState = digitalRead(RED_LED); // Running this line every iteration causes the LED to flicker weirdly
-  //Serial.print("\t");
-  //Serial.print(digitalRead(RED_LED));
-  //Serial.print("\n");
 
   // Adapted from https://docs.arduino.cc/built-in-examples/digital/BlinkWithoutDelay
   if (ledState == HIGH && (currentMillis - previousMillis >= intervalMillisLong))
@@ -112,12 +109,6 @@ void loop()
     digitalWrite(RED_LED, !ledState);
     previousMillis = currentMillis;
   }
-
-//  if (currentMillis - previousMillis >= intervalMillis)
-//  {
-//    previousMillis = currentMillis;
-//    digitalWrite(RED_LED, !digitalRead(RED_LED));
-//  }
 
   // While there is data in the serial port buffer, continue to process
   while (Serial.available() > 0)
@@ -137,6 +128,11 @@ void loop()
       if (ch == 'S' || ch == 's')
       {      
         value = Serial.parseInt();
+        mode = SET;
+      }
+      else
+      {
+        mode = GET;
       }
 
       /////////////////////////////////////////
@@ -144,6 +140,38 @@ void loop()
       /////////////////////////////////////////
       // IF GET DO A DIGITAL READ and return the VALUE
       // IF SET DO A DIGITAL WRITE
+
+      // Get / Set Digital
+      switch (type)
+      {
+        case DIGITAL:        
+          if (mode == SET)
+          {
+            digitalWrite(channel, value);
+          }
+          else // GET
+          {
+            Serial.print(digitalRead(channel)); 
+          }
+        break;
+
+        case ANALOG:
+          if (mode == SET)
+          {
+            break;;
+          }
+          else // GET
+          {
+            Serial.print(analogRead(channel)); 
+          }
+        break;
+
+        case SERVO:
+        break;
+
+        default:
+        break;
+      }
       
       /////////////////////////////////////////
       // TODO: Get / Set Analog
@@ -158,7 +186,7 @@ void loop()
       // IF SET SEND TO SERVO OBJECT
 
       // Format and send response
-      Serial.print ("A ");
+      Serial.print ("A: ");
       Serial.print (type);
       Serial.print (" ");
       Serial.print (channel);
