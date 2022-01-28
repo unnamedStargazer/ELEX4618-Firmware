@@ -29,6 +29,11 @@ Servo myservo[4];
 int type;
 int channel;
 int value;
+bool ledState;
+unsigned long previousMillis = 0;
+const long intervalMillisShort = 10;
+const long intervalMillisLong = ((1000/intervalMillisShort)-1)*intervalMillisShort;
+// ex. 1000/50 = 20; 20 - 1 = 19; 19 * 50 = 950. Ensures that the period of the LED flash is one second.
 
 #define BAUD_RATE 115200
 
@@ -71,7 +76,7 @@ void setup()
 
   Serial.print("\n////////////////////////////////////////////////////////////////////////////////////");
   Serial.print("\n// ELEX 4618 IO Communication for MSP432 V2.1 Student");
-  Serial.print("\n// By: STUDENT NAME, DATE");
+  Serial.print("\n// By: Felix Serban, 2022-01-28");
   Serial.print("\n// MSP432: Digital In/Out 1-40 on 4x 10 pin headers");
   Serial.print("\n// MSP432: Digital In 41 & 42 are PUSH1 and PUSH2 (MSP432)");
   Serial.print("\n// MSP432: Analog in A0 to A15 (0-15)");
@@ -86,11 +91,48 @@ void setup()
 
 void loop()
 {
-  /////////////////////////////////////////
-  // TODO: Flash LED ON/OFF
-  // Hint: If you use DELAY your program will run slowly.
-  // Hint: Use millis() to measure elapsed time and toggle LED
-  /////////////////////////////////////////
+  // Heartbeat to indicate board is operational
+  unsigned long currentMillis = millis();
+  //ledState = digitalRead(RED_LED); // Running this line every iteration causes the LED to flicker weirdly
+  //Serial.print("\t");
+  //Serial.print(digitalRead(RED_LED));
+  //Serial.print("\n");
+
+  // Courtesy of https://docs.arduino.cc/built-in-examples/digital/BlinkWithoutDelay
+  if (ledState == HIGH && (currentMillis - previousMillis >= intervalMillisLong))
+  {
+    ledState = digitalRead(RED_LED);
+    digitalWrite(RED_LED, !ledState);
+    Serial.print("\nOff:\t");
+    //Serial.print(digitalRead(RED_LED));
+    //Serial.print("\t");
+    Serial.print(ledState);
+    Serial.print("\t");
+    Serial.print(previousMillis);
+    Serial.print("\t");
+    Serial.print(currentMillis);
+    previousMillis = currentMillis;
+  }
+  else if (ledState == LOW && (currentMillis - previousMillis >= intervalMillisShort))
+  {
+    ledState = digitalRead(RED_LED);
+    digitalWrite(RED_LED, !ledState);
+    Serial.print("\nOn:\t");
+    //Serial.print(digitalRead(RED_LED));
+    //Serial.print("\t");
+    Serial.print(ledState);
+    Serial.print("\t");
+    Serial.print(previousMillis);
+    Serial.print("\t");
+    Serial.print(currentMillis);
+    previousMillis = currentMillis;
+  }
+
+//  if (currentMillis - previousMillis >= intervalMillis)
+//  {
+//    previousMillis = currentMillis;
+//    digitalWrite(RED_LED, !digitalRead(RED_LED));
+//  }
 
   // While there is data in the serial port buffer, continue to process
   while (Serial.available() > 0)
