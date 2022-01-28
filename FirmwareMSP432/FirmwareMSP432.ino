@@ -158,7 +158,7 @@ void loop()
         case ANALOG:
           if (mode == SET)
           {
-            break;;
+            break;
           }
           else // GET
           {
@@ -167,6 +167,14 @@ void loop()
         break;
 
         case SERVO:
+          if (mode == SET)
+          {
+            myservo[channel].write(value);
+          }
+          else // GET
+          {
+            Serial.print(myservo[channel].read());
+          }
         break;
 
         default:
