@@ -33,7 +33,8 @@ bool ledState;
 unsigned long previousMillis = 0;
 const long intervalMillisShort = 10;
 const long intervalMillisLong = ((1000/intervalMillisShort)-1)*intervalMillisShort;
-// ex. 1000/50 = 20; 20 - 1 = 19; 19 * 50 = 950. Ensures that the period of the LED flash is one second.
+// ex. 1000/50 = 20; 20 - 1 = 19; 19 * 50 = 950. 
+// Ensures that the period of the LED flash is one second.
 
 #define BAUD_RATE 115200
 
@@ -98,33 +99,17 @@ void loop()
   //Serial.print(digitalRead(RED_LED));
   //Serial.print("\n");
 
-  // Courtesy of https://docs.arduino.cc/built-in-examples/digital/BlinkWithoutDelay
+  // Adapted from https://docs.arduino.cc/built-in-examples/digital/BlinkWithoutDelay
   if (ledState == HIGH && (currentMillis - previousMillis >= intervalMillisLong))
   {
     ledState = digitalRead(RED_LED);
     digitalWrite(RED_LED, !ledState);
-    Serial.print("\nOff:\t");
-    //Serial.print(digitalRead(RED_LED));
-    //Serial.print("\t");
-    Serial.print(ledState);
-    Serial.print("\t");
-    Serial.print(previousMillis);
-    Serial.print("\t");
-    Serial.print(currentMillis);
     previousMillis = currentMillis;
   }
   else if (ledState == LOW && (currentMillis - previousMillis >= intervalMillisShort))
   {
     ledState = digitalRead(RED_LED);
     digitalWrite(RED_LED, !ledState);
-    Serial.print("\nOn:\t");
-    //Serial.print(digitalRead(RED_LED));
-    //Serial.print("\t");
-    Serial.print(ledState);
-    Serial.print("\t");
-    Serial.print(previousMillis);
-    Serial.print("\t");
-    Serial.print(currentMillis);
     previousMillis = currentMillis;
   }
 
