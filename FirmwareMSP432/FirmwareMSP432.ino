@@ -30,6 +30,7 @@ int type;
 int channel;
 int value;
 int mode;
+int response;
 bool ledState;
 unsigned long previousMillis = 0;
 const long intervalMillisShort = 10;
@@ -135,13 +136,6 @@ void loop()
         mode = GET;
       }
 
-      /////////////////////////////////////////
-      // TODO: Get / Set Digital
-      /////////////////////////////////////////
-      // IF GET DO A DIGITAL READ and return the VALUE
-      // IF SET DO A DIGITAL WRITE
-
-      // Get / Set Digital
       switch (type)
       {
         case DIGITAL:        
@@ -151,7 +145,7 @@ void loop()
           }
           else // GET
           {
-            Serial.print(digitalRead(channel)); 
+            response = digitalRead(channel); 
           }
         break;
 
@@ -162,7 +156,7 @@ void loop()
           }
           else // GET
           {
-            Serial.print(analogRead(channel)); 
+            response = analogRead(channel); 
           }
         break;
 
@@ -173,25 +167,13 @@ void loop()
           }
           else // GET
           {
-            Serial.print(myservo[channel].read());
+            response = myservo[channel].read();
           }
         break;
 
         default:
         break;
       }
-      
-      /////////////////////////////////////////
-      // TODO: Get / Set Analog
-      /////////////////////////////////////////
-      // IF GET DO AN ANALOG READ and return the VALUE
-      // IF SET DON'T DO ANYTHING (CONFLICT WITH SERVO)
-      
-      /////////////////////////////////////////
-      // TODO: Get / Set Servo
-      /////////////////////////////////////////
-      // IF GET RETURN THE LAST SERVO VALUE SENT
-      // IF SET SEND TO SERVO OBJECT
 
       // Format and send response
       Serial.print ("A: ");
@@ -200,6 +182,8 @@ void loop()
       Serial.print (channel);
       Serial.print (" ");
       Serial.print (value);
+      Serial.print (" ");
+      Serial.print (response);
       Serial.print ("\n");
     }
   }
